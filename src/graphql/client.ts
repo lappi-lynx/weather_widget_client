@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { GRAPHQL_API_URL } from '../constants';
 
 export const client = new ApolloClient({
-  uri: import.meta.env.APP_GRAPHQL_API_URL,
+  uri: GRAPHQL_API_URL,
   cache: new InMemoryCache()
 });
