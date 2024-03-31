@@ -40,3 +40,18 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Widget styles below */
+.weather-widget {
+  padding: 0.5em 1em;
+}
+
+.weather-widget.light {
+  background-color: #eee;
+  color: #31363F;
+}
+
+.weather-widget.dark {
+  background-color: #31363F;
+  color: #eee;
+}
