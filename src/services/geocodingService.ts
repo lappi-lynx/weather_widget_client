@@ -1,5 +1,8 @@
-export const fetchCities = async (city: string) => {
-  const endpoint = `${import.meta.env.APP_GEODOING_API_URL}/search?name=${encodeURIComponent(city)}`;
+import { SuggestedCity } from '../components/types/SuggestedCity';
+import { GEODOING_API_URL } from '../constants';
+
+export const fetchCities = async (city: string): Promise<SuggestedCity[]> => {
+  const endpoint = `${GEODOING_API_URL}/search?name=${encodeURIComponent(city)}`;
 
   try {
     const response = await fetch(endpoint);
