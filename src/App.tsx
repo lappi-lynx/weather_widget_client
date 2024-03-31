@@ -9,7 +9,7 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <Routes>
-          <Route path="/widget" element={<Widget latitude={60.1695} longitude={24.9354} days={1} theme="dark" />} />
+          <Route path="/forecast" element={<Widget />} />
         </Routes>
       </Router>
     </ApolloProvider>
