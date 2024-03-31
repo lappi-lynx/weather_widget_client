@@ -1,12 +1,8 @@
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
+import { client } from './graphql/client';
 import { Widget } from './components/Widget';
-
-const client = new ApolloClient({
-  uri: import.meta.env.APP_GRAPHQL_API_URL,
-  cache: new InMemoryCache()
-});
 
 function App() {
   return (
