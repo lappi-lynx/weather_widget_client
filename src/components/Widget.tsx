@@ -9,8 +9,10 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import { WeatherData } from './types/WeatherData';
-import { DEFAULT_WIDGET_PARAMS } from './../constants/index';
+import { DEFAULT_WIDGET_PARAMS, DEFAULT_CITY } from './../constants/index';
 
 export const Widget: React.FC = () => {
   const locationURL = useLocation();
@@ -22,14 +24,15 @@ export const Widget: React.FC = () => {
     },
   });
 
-  const [citySearch, setCitySearch] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [selectedCity, setSelectedCity] = useState<SuggestedCity | null>(DEFAULT_CITY);
   const [suggestions, setSuggestions] = useState<SuggestedCity[]>([]);
   const [location, setLocation] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
     longitude: DEFAULT_WIDGET_PARAMS.longitude,
     days: DEFAULT_WIDGET_PARAMS.days
   });
-  const debouncedSearchTerm = useDebounce(citySearch, 500); // 500ms debounce
+  const debouncedSearchTerm = useDebounce(inputValue, 500); // 500ms debounce
 
   const { loading, error, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
     variables: location
@@ -47,37 +50,38 @@ export const Widget: React.FC = () => {
     }
   }, [debouncedSearchTerm]);
 
-  const handleSelectCity = (selectedCity: SuggestedCity) => {
-    console.log("selectedCity", selectedCity);
-    setLocation(prev => ({
-      ...prev,
-      latitude: selectedCity.latitude,
-      longitude: selectedCity.longitude
-    }));
-    setCitySearch(selectedCity.name);
-    setSuggestions([]);
+  const handleSelectCity = (_event: React.ChangeEvent<object>, value: SuggestedCity | null) => {
+    if (value) {
+      setSelectedCity(value);
+      setLocation({
+        latitude: value.latitude,
+        longitude: value.longitude,
+        days: DEFAULT_WIDGET_PARAMS.days,
+      });
+    }
   };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  console.log("Response data", data);
 
   return (
     <ThemeProvider theme={theme}>
       <main>
-        <input
-          type="text"
-          value={citySearch}
-          onChange={(e) => setCitySearch(e.target.value)}
-          placeholder="Search for a city"
+        <Autocomplete
+          value={selectedCity}
+          onChange={handleSelectCity}
+          inputValue={inputValue}
+          onInputChange={(_event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          options={suggestions}
+          getOptionLabel={(option) => { console.log(option); return option.name + ', ' + option.country}}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField {...params} label="Search for a city" variant="outlined" fullWidth />
+          )}
+          style={{ marginBottom: '1rem' }}
         />
-        <div className="suggestions">
-          {suggestions.map((suggestion) => (
-            <div key={suggestion.id} onClick={() => handleSelectCity(suggestion)}>
-              {suggestion.name}, {suggestion.country}
-            </div>
-          ))}
-        </div>
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {data && (
