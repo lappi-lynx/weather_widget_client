@@ -1,8 +1,11 @@
 import { SuggestedCity } from '../components/types/SuggestedCity';
 import { GEODOING_API_URL } from '../constants';
+import { validateCityParam } from '../utils/validateCity';
+import { buildReqestUrl } from '../utils/buildReqestUrl';
 
 export const fetchCities = async (city: string, signal: AbortSignal): Promise<SuggestedCity[]> => {
-  const endpoint = `${GEODOING_API_URL}/search?name=${encodeURIComponent(city)}`;
+  const sanitizedCity = validateCityParam(city);
+  const endpoint = buildReqestUrl(GEODOING_API_URL, '/search', { name: sanitizedCity });
 
   try {
     const response = await fetch(endpoint, { signal });
