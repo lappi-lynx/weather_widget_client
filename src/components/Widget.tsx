@@ -15,8 +15,7 @@ import { WeatherData } from './types/WeatherData';
 import { DEFAULT_WIDGET_PARAMS, DEFAULT_CITY } from './../constants/index';
 
 export const Widget: React.FC = () => {
-  const locationURL = useLocation();
-  const searchParams = new URLSearchParams(locationURL.search);
+  const searchParams = new URLSearchParams(useLocation().search);
   const themeParam = searchParams.get('theme') || 'dark';
   const theme = createTheme({
     palette: {
@@ -27,7 +26,7 @@ export const Widget: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedCity, setSelectedCity] = useState<SuggestedCity | null>(DEFAULT_CITY);
   const [suggestions, setSuggestions] = useState<SuggestedCity[]>([]);
-  const [location, setLocation] = useState({
+  const [queryParams, setQueryParams] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
     longitude: DEFAULT_WIDGET_PARAMS.longitude,
     days: DEFAULT_WIDGET_PARAMS.days
@@ -35,7 +34,7 @@ export const Widget: React.FC = () => {
   const debouncedSearchTerm = useDebounce(inputValue, 500); // 500ms debounce
 
   const { loading, error, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
-    variables: location
+    variables: queryParams
   });
 
   useEffect(() => {
@@ -53,7 +52,7 @@ export const Widget: React.FC = () => {
   const handleSelectCity = (_event: React.ChangeEvent<object>, value: SuggestedCity | null) => {
     if (value) {
       setSelectedCity(value);
-      setLocation({
+      setQueryParams({
         latitude: value.latitude,
         longitude: value.longitude,
         days: DEFAULT_WIDGET_PARAMS.days,
