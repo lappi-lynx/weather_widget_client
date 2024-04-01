@@ -1,30 +1,46 @@
-# React + TypeScript + Vite
+## GraphQL weather forecast client application
+It supports weather forecast in range from 1 to 16 days.
+Make sure [server](https://github.com/lappi-lynx/weather_widget_api) is running first!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### Installation and running
+TODO Dockerize
+```
+npm build
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Embedding
+```
+<script>
+    function injectWeatherWidget(theme = 'dark') {
+      var iframe = document.createElement('iframe');
+      // client app url
+      iframe.src = `http://localhost:5173/forecast?theme=${theme}`;
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.frameBorder = '0';
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.minHeight = '450px';
+      document.getElementById('weatherWidgetContainer').innerHTML = '';
+      document.getElementById('weatherWidgetContainer').appendChild(iframe);
+    }
+
+    function toggleTheme() {
+      var body = document.body;
+      body.classList.toggle('dark');
+      var theme = body.classList.contains('dark') ? 'dark' : 'light';
+      injectWeatherWidget(theme);
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      injectWeatherWidget('dark');
+    });
+  </script>
+
+  <button onclick="toggleTheme()">Switch theme</button>
+```
+### Theme support
+`dark` (by default) and `light` themes supported
+![Dark theme](./examples/dark_theme.jpeg)
+![Light theme](./examples/light_theme.jpeg)
