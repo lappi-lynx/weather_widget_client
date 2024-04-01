@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { useDebounce } from '../hooks/useDebounce';
 import { useFetchCities } from '../hooks/useFetchCities';
-import { GET_FORECAST_FROM_COORDS_QUERY  } from '../graphql/queries';
+import { GET_FORECAST_FROM_COORDS_QUERY } from '../graphql/queries';
 import { SuggestedCity } from '../domain/types/SuggestedCity';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import { ResponsiveChartContainer, LinePlot, ChartsXAxis, ChartsYAxis, ChartsLegend, ChartsGrid, ChartsReferenceLine, ChartsTooltip } from '@mui/x-charts';
+import dayjs from 'dayjs';
 import { WeatherData } from './../domain/types/WeatherData';
 import { DEFAULT_WIDGET_PARAMS, DEFAULT_CITY } from '../infrastructure/constants';
 
 export const Widget: React.FC = () => {
-
   const [inputValue, setInputValue] = useState('');
   const [selectedCity, setSelectedCity] = useState<SuggestedCity | null>(DEFAULT_CITY);
   const [queryParams, setQueryParams] = useState({
@@ -41,6 +39,22 @@ export const Widget: React.FC = () => {
       });
     }
   };
+
+  const [chartData, setChartData] = useState({
+    xAxisData: [],
+    seriesData: [] as number[][]
+  });
+  useMemo(() => {
+    if (data && data.getForecastByCoordinates) {
+      const timestamps = data.getForecastByCoordinates.map((forecast: WeatherData) => new Date(forecast.timestamp));
+      const temperatures = data.getForecastByCoordinates.map((forecast: WeatherData) => forecast.temperature);
+
+      setChartData({
+        xAxisData: timestamps,
+        seriesData: [temperatures]
+      });
+    }
+  }, [data]);
 
   return (
     <main>
@@ -75,29 +89,32 @@ export const Widget: React.FC = () => {
         </Alert>
       )}
       {data && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {data.getForecastByCoordinates.map((forecast: WeatherData, index: number) => (
-            <Card key={index} variant="outlined" sx={{ maxWidth: 345 }}>
-              <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                  {new Date(forecast.timestamp).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', hour12: true })}
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  {forecast.temperature} °{forecast.temperatureUnit}
-                </Typography>
-                <Typography color="textSecondary">
-                  Humidity: {forecast.humidity}%
-                </Typography>
-                <Typography color="textSecondary">
-                  Wind Speed: {forecast.windSpeed} km/h
-                </Typography>
-                <Typography color="textSecondary">
-                  Cloud Cover: {forecast.cloudCover}%
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <ResponsiveChartContainer
+          xAxis={[{
+            label: "Time",
+            data: chartData.xAxisData,
+            tickInterval: chartData.xAxisData,
+            scaleType: 'time',
+            valueFormatter: (date) => dayjs(date).format("MMM D, hA"),
+          }]}
+          yAxis={[{ label: "Temperature (°C)" }]}
+          series={[{ type: 'line', label: selectedCity?.name || 'City', data: chartData.seriesData[0] }]}
+          height={400}
+        >
+          <LinePlot />
+          <ChartsXAxis />
+          <ChartsYAxis />
+          <ChartsLegend />
+          <ChartsTooltip trigger="axis" />
+          {/* Can not fix Grid key warnings so far */}
+          <ChartsGrid horizontal={true} vertical={true} />
+          <ChartsReferenceLine
+            y={0}
+            label="freezing point"
+            labelAlign="end"
+            lineStyle={{ stroke: '#333', strokeDasharray: '5 5' }}
+          />
+        </ResponsiveChartContainer>
       )}
     </main>
   );
