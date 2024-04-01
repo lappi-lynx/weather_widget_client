@@ -9,6 +9,8 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { WeatherData } from './../domain/types/WeatherData';
 import { DEFAULT_WIDGET_PARAMS, DEFAULT_CITY } from '../infrastructure/constants';
 
@@ -40,8 +42,20 @@ export const Widget: React.FC = () => {
     }
   };
 
-  if (loadingForecast) return <p>Loading forecast...</p>;
-  if (errorForecast) return <p>Error: {errorForecast.message}</p>;
+  {
+    loadingForecast && (
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
+        <CircularProgress />
+      </div>
+    )
+  }
+  {
+    errorForecast && (
+      <Alert severity="error" style={{ marginBottom: '1rem' }}>
+        Error loading forecast: {errorForecast.message}
+      </Alert>
+    )
+  }
 
   return (
     <main>
@@ -60,8 +74,16 @@ export const Widget: React.FC = () => {
         )}
         style={{ marginBottom: '1rem' }}
       />
-      {loadingCities && <p>Loading cities...</p>}
-      {errorCities && <p>Error in city loading: {errorCities.message}</p>}
+      { loadingCities && (
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
+          <CircularProgress />
+        </div>
+      )}
+      { errorCities && (
+        <Alert severity="error" style={{ marginBottom: '1rem' }}>
+          Error loading cities: {errorCities.message}
+        </Alert>
+      )}
       {data && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {data.getForecastByCoordinates.map((forecast: WeatherData, index: number) => (
