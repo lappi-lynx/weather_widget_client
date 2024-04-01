@@ -12,8 +12,9 @@ export const GRAPHQL_API_URL  = import.meta.env.APP_GRAPHQL_API_URL || 'http://l
 
 export const DEFAULT_CITY: SuggestedCity = {
   id: 658225,
-  name: "Helsingfors",
+  name: 'Helsingfors',
   latitude: 60.16952,
   longitude: 24.93545,
-  country: "Finland"
+  country: 'Finland',
+  country_id: 660013
 };

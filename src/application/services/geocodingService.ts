@@ -13,7 +13,16 @@ export const fetchCities = async (city: string, signal: AbortSignal): Promise<Su
       throw new Error(`${response.status} HTTP error fetching city suggestions.`);
     }
     const data = await response.json();
-    return data.results;
+
+    // data.results might be undefined for a short time because of debouncing
+    const uniqCitiesData = data.results?.reduce((unique: SuggestedCity[], city: SuggestedCity) => {
+      if (unique.findIndex(u => u.name === city.name && u.country_id === city.country_id) === -1) {
+        unique.push(city);
+      }
+      return unique;
+    }, []);
+
+    return uniqCitiesData;
   } catch (e: unknown) {
     if (e instanceof Error) {
       if (e.name === 'AbortError') {
