@@ -4,4 +4,5 @@ export type SuggestedCity = {
   latitude: number;
   longitude: number;
   country: string;
+  country_id: number;
 };
