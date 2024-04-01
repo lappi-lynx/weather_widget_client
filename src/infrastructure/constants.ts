@@ -1,4 +1,4 @@
-import { SuggestedCity } from './../components/types/SuggestedCity';
+import { SuggestedCity } from '../domain/types/SuggestedCity';
 
 export const DEFAULT_WIDGET_PARAMS = {
   latitude: 60.16952,

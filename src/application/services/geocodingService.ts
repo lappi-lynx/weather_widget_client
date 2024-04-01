@@ -1,7 +1,7 @@
-import { SuggestedCity } from '../components/types/SuggestedCity';
-import { GEODOING_API_URL } from '../constants';
-import { validateCityParam } from '../utils/validateCity';
-import { buildReqestUrl } from '../utils/buildReqestUrl';
+import { SuggestedCity } from '../../domain/types/SuggestedCity';
+import { GEODOING_API_URL } from '../../infrastructure/constants';
+import { validateCityParam } from '../../utils/validateCity';
+import { buildReqestUrl } from '../../utils/buildReqestUrl';
 
 export const fetchCities = async (city: string, signal: AbortSignal): Promise<SuggestedCity[]> => {
   const sanitizedCity = validateCityParam(city);

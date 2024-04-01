@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { fetchCities } from '../services/geocodingService';
-import { SuggestedCity } from './../components/types/SuggestedCity';
+import { fetchCities } from '../application/services/geocodingService';
+import { SuggestedCity } from '../domain/types/SuggestedCity';
 
 export const useFetchCities = (searchTerm: string) => {
   const [loading, setLoading] = useState(false);
