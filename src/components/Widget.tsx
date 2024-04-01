@@ -42,21 +42,6 @@ export const Widget: React.FC = () => {
     }
   };
 
-  {
-    loadingForecast && (
-      <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
-        <CircularProgress />
-      </div>
-    )
-  }
-  {
-    errorForecast && (
-      <Alert severity="error" style={{ marginBottom: '1rem' }}>
-        Error loading forecast: {errorForecast.message}
-      </Alert>
-    )
-  }
-
   return (
     <main>
       <Autocomplete
@@ -74,14 +59,19 @@ export const Widget: React.FC = () => {
         )}
         style={{ marginBottom: '1rem' }}
       />
-      { loadingCities && (
+      {(loadingCities || loadingForecast) && (
         <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
           <CircularProgress />
         </div>
       )}
-      { errorCities && (
+      {errorCities && (
         <Alert severity="error" style={{ marginBottom: '1rem' }}>
           Error loading cities: {errorCities.message}
+        </Alert>
+      )}
+      {errorForecast && (
+        <Alert severity="error" style={{ marginBottom: '1rem' }}>
+          Error loading forecast: {errorForecast.message}
         </Alert>
       )}
       {data && (
