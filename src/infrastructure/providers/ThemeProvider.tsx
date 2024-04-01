@@ -10,7 +10,26 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const mode: PaletteMode = getThemeMode(searchParams.get('theme'));
   const themeInit = (mode: PaletteMode) => createTheme({
     palette: {
-      mode: mode
+      mode: mode,
+      ...(mode === 'light' ? {
+        background: {
+          default: '#EEEEEE',
+          paper: '#EEEEEE',
+        },
+        text: {
+          primary: '#31363F',
+          secondary: 'rgba(49, 54, 63, 0.7)',
+        },
+      } : {
+        background: {
+          default: '#31363F',
+          paper: '#31363F',
+        },
+        text: {
+          primary: '#EEEEEE',
+          secondary: 'rgba(255, 255, 255, 0.7)',
+        },
+      })
     },
   });
 

@@ -7,6 +7,7 @@ import { SuggestedCity } from '../domain/types/SuggestedCity';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
+import { useTheme } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import { ResponsiveChartContainer, LinePlot, ChartsXAxis, ChartsYAxis, ChartsLegend, ChartsGrid, ChartsReferenceLine, ChartsTooltip } from '@mui/x-charts';
 import dayjs from 'dayjs';
@@ -22,6 +23,7 @@ export const Widget: React.FC = () => {
     days: DEFAULT_WIDGET_PARAMS.days
   });
   const debouncedSearchTerm = useDebounce(inputValue, 500); // 500ms debounce
+  const { palette } = useTheme();
 
   const { loading: loadingForecast, error: errorForecast, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
     variables: queryParams
@@ -57,7 +59,7 @@ export const Widget: React.FC = () => {
   }, [data]);
 
   return (
-    <main>
+    <main style={{ backgroundColor: palette.background.default, color: palette.text.primary }}>
       <Autocomplete
         onChange={handleSelectCity}
         options={citySuggestions}
@@ -71,7 +73,7 @@ export const Widget: React.FC = () => {
         renderInput={(params) => (
           <TextField {...params} label="Search for a city" variant="outlined" fullWidth />
         )}
-        style={{ marginBottom: '1rem' }}
+        style={{ marginBottom: '1rem', paddingTop: '1rem' }}
       />
       {(loadingCities || loadingForecast) && (
         <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
@@ -99,7 +101,7 @@ export const Widget: React.FC = () => {
           }]}
           yAxis={[{ label: "Temperature (°C)" }]}
           series={[{ type: 'line', label: selectedCity?.name || 'City', data: chartData.seriesData[0] }]}
-          height={400}
+          height={300}
         >
           <LinePlot />
           <ChartsXAxis />
