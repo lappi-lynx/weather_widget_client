@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
-import { fetchCities } from '../services/geocodingService';
 import { useDebounce } from '../hooks/useDebounce';
+import { useFetchCities } from '../hooks/useFetchCities';
 import { GET_FORECAST_FROM_COORDS_QUERY  } from '../graphql/queries';
 import { SuggestedCity } from './types/SuggestedCity';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -25,7 +25,6 @@ export const Widget: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [selectedCity, setSelectedCity] = useState<SuggestedCity | null>(DEFAULT_CITY);
-  const [suggestions, setSuggestions] = useState<SuggestedCity[]>([]);
   const [queryParams, setQueryParams] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
     longitude: DEFAULT_WIDGET_PARAMS.longitude,
@@ -33,21 +32,11 @@ export const Widget: React.FC = () => {
   });
   const debouncedSearchTerm = useDebounce(inputValue, 500); // 500ms debounce
 
-  const { loading, error, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
+  const { loading: loadingForecast, error: errorForecast, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
     variables: queryParams
   });
 
-  useEffect(() => {
-    if (debouncedSearchTerm.length >= 2) {
-      fetchCities(debouncedSearchTerm)
-        .then((results) => {
-          setSuggestions(results || []);
-        })
-        .catch(console.error);
-    } else {
-      setSuggestions([]);
-    }
-  }, [debouncedSearchTerm]);
+  const { loading: loadingCities, data: citySuggestions, error: errorCities } = useFetchCities(debouncedSearchTerm);
 
   const handleSelectCity = (_event: React.ChangeEvent<object>, value: SuggestedCity | null) => {
     if (value) {
@@ -60,8 +49,8 @@ export const Widget: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loadingForecast) return <p>Loading forecast...</p>;
+  if (errorForecast) return <p>Error: {errorForecast.message}</p>;
 
   return (
     <ThemeProvider theme={theme}>
@@ -73,16 +62,16 @@ export const Widget: React.FC = () => {
           onInputChange={(_event, newInputValue) => {
             setInputValue(newInputValue);
           }}
-          options={suggestions}
-          getOptionLabel={(option) => { console.log(option); return option.name + ', ' + option.country}}
+          options={citySuggestions}
+          getOptionLabel={(option) => option.name + ', ' + option.country}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField {...params} label="Search for a city" variant="outlined" fullWidth />
           )}
           style={{ marginBottom: '1rem' }}
         />
-        {loading && <p>Loading...</p>}
-        {error && <p>Error: {error}</p>}
+        {loadingCities && <p>Loading cities...</p>}
+        {errorCities && <p>Error in city loading: {errorCities.message}</p>}
         {data && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {data.getForecastByCoordinates.map((forecast: WeatherData, index: number) => (
