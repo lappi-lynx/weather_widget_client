@@ -9,5 +9,7 @@ export type WeatherData = {
   windSpeed: number;
   cloudCover: number;
   sunshineDuration: number;
+  precipitationProbability: number;
+  precipitation: number;
   temperatureUnit: string;
 };

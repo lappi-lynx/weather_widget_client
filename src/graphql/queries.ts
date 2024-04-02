@@ -13,6 +13,8 @@ export const GET_FORECAST_FROM_COORDS_QUERY = gql`
       windSpeed
       cloudCover
       sunshineDuration
+      precipitationProbability
+      precipitation
       temperatureUnit
     }
   }

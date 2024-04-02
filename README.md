@@ -21,7 +21,7 @@ docker run --rm -p 3333:3333 forecast_client
       iframe.frameBorder = '0';
       iframe.style.border = 'none';
       iframe.style.width = '100%';
-      iframe.style.minHeight = '450px';
+      iframe.style.minHeight = '480px';
       document.getElementById('weatherWidgetContainer').innerHTML = '';
       document.getElementById('weatherWidgetContainer').appendChild(iframe);
     }
@@ -47,11 +47,12 @@ docker run --rm -p 3333:3333 forecast_client
 - [X] ThemeProvider for themes customization
 - [X] The website is responsive and look nice on all screens
 - [X] The website works in all modern browsers
-- [ ] Add info about humidity, clouds, precipitation
+- [X] Responsible, adaptive design
+- [X] Add info about wind, clouds, precipitation
 - [ ] Add weather icons
 - [ ] Unit tests
 - [X] City autocomplete requests are cached in browser (localStorage)
-- [ ] Add compact mode to show in a round box
+- [ ] Add compact mode to show daly forecast in a round box (separate component & URL)
 -
 ### Theme support
 `dark` (by default) and `light` themes supported
