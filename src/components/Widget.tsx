@@ -3,21 +3,19 @@ import { useQuery } from '@apollo/client';
 import { useCityAutocomplete } from '../hooks/useCityAutocomplete';
 import { GET_FORECAST_FROM_COORDS_QUERY } from '../graphql/queries';
 import { SuggestedCity } from '../domain/types/SuggestedCity';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Alert from '@mui/material/Alert';
-import { useTheme } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
+import { useTheme, Autocomplete, Alert, TextField, CircularProgress } from "@mui/material";
 import { ResponsiveChartContainer, LinePlot, ChartsXAxis, ChartsYAxis, ChartsLegend, ChartsGrid, ChartsReferenceLine, ChartsTooltip } from '@mui/x-charts';
 import dayjs from 'dayjs';
 import { WeatherData } from './../domain/types/WeatherData';
+import { ForecastDaysSelector } from './ForecastDaysSelector';
 import { DEFAULT_WIDGET_PARAMS } from '../infrastructure/constants';
 
 export const Widget: React.FC = () => {
+  const [forecastDays, setForecastDays] = useState(DEFAULT_WIDGET_PARAMS.days);
   const [queryParams, setQueryParams] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
     longitude: DEFAULT_WIDGET_PARAMS.longitude,
-    days: DEFAULT_WIDGET_PARAMS.days
+    days: forecastDays
   });
   const { palette } = useTheme();
   console.log('palette', palette);
@@ -46,6 +44,14 @@ export const Widget: React.FC = () => {
       }));
     }
   }
+
+  const handleForecastDaysChange = (_event: React.MouseEvent<HTMLElement>, value: number) => {
+    setForecastDays(value);
+    setQueryParams(prev => ({
+      ...prev,
+      days: value
+    }));
+  };
 
   const [chartData, setChartData] = useState({
     xAxisData: [],
@@ -95,6 +101,12 @@ export const Widget: React.FC = () => {
           Error loading forecast: {errorForecast.message}
         </Alert>
       )}
+
+      <ForecastDaysSelector
+        forecastDays={forecastDays}
+        onForecastDaysChange={handleForecastDaysChange}
+      />
+
       {data && (
         <ResponsiveChartContainer
           xAxis={[{

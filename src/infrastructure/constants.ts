@@ -3,7 +3,7 @@ import { SuggestedCity } from '../domain/types/SuggestedCity';
 export const DEFAULT_WIDGET_PARAMS = {
   latitude: 60.16952,
   longitude: 24.93545,
-  days: 1,
+  days: 3,
   theme: 'dark'
 };
 
