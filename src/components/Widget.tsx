@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { useDebounce } from '../hooks/useDebounce';
-import { useFetchCities } from '../hooks/useFetchCities';
+import { useCityAutocomplete } from '../hooks/useCityAutocomplete';
 import { GET_FORECAST_FROM_COORDS_QUERY } from '../graphql/queries';
 import { SuggestedCity } from '../domain/types/SuggestedCity';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -12,35 +11,41 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { ResponsiveChartContainer, LinePlot, ChartsXAxis, ChartsYAxis, ChartsLegend, ChartsGrid, ChartsReferenceLine, ChartsTooltip } from '@mui/x-charts';
 import dayjs from 'dayjs';
 import { WeatherData } from './../domain/types/WeatherData';
-import { DEFAULT_WIDGET_PARAMS, DEFAULT_CITY } from '../infrastructure/constants';
+import { DEFAULT_WIDGET_PARAMS } from '../infrastructure/constants';
 
 export const Widget: React.FC = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [selectedCity, setSelectedCity] = useState<SuggestedCity | null>(DEFAULT_CITY);
   const [queryParams, setQueryParams] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
     longitude: DEFAULT_WIDGET_PARAMS.longitude,
     days: DEFAULT_WIDGET_PARAMS.days
   });
-  const debouncedSearchTerm = useDebounce(inputValue, 500); // 500ms debounce
   const { palette } = useTheme();
+  console.log('palette', palette);
 
   const { loading: loadingForecast, error: errorForecast, data } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
     variables: queryParams
   });
 
-  const { loading: loadingCities, data: citySuggestions, error: errorCities } = useFetchCities(debouncedSearchTerm);
+  const {
+    inputValue,
+    setInputValue,
+    selectedCity,
+    setSelectedCity,
+    citySuggestions,
+    loadingCities,
+    errorCities,
+  } = useCityAutocomplete();
 
   const handleSelectCity = (_event: React.ChangeEvent<object>, value: SuggestedCity | null) => {
     if (value) {
       setSelectedCity(value);
-      setQueryParams({
+      setQueryParams(prev => ({
+        ...prev,
         latitude: value.latitude,
         longitude: value.longitude,
-        days: DEFAULT_WIDGET_PARAMS.days,
-      });
+      }));
     }
-  };
+  }
 
   const [chartData, setChartData] = useState({
     xAxisData: [],
@@ -114,7 +119,7 @@ export const Widget: React.FC = () => {
             y={0}
             label="freezing point"
             labelAlign="end"
-            lineStyle={{ stroke: '#333', strokeDasharray: '5 5' }}
+            lineStyle={{ stroke: palette.text.primary, strokeDasharray: '5 5' }}
           />
         </ResponsiveChartContainer>
       )}

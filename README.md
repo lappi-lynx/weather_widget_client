@@ -40,6 +40,19 @@ docker run --rm -p 3333:3333 forecast_client
 
   <button onclick="toggleTheme()">Switch theme</button>
 ```
+### TODOs
+- [X] Docker container
+- [X] Decoupled custom hooks, infra, services and util functions
+- [X] MaterialUI components
+- [X] ThemeProvider for themes customization
+- [X] The website is responsive and look nice on all screens
+- [X] The website works in all modern browsers
+- [ ] Add info about humidity, clouds, precipitation
+- [ ] Add weather icons
+- [ ] Unit tests
+- [X] City autocomplete requests are cached in browser (localStorage)
+- [ ] Add compact mode to show in a round box
+-
 ### Theme support
 `dark` (by default) and `light` themes supported
 ![Dark theme](./examples/dark_theme.jpeg)
