@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { ForecastDaysSelectorProps } from '../domain/types/ForecastDaysSelectorProps';
+import { ForecastDaysSelectorProps } from '../../domain/types/ForecastDaysSelectorProps';
 
 export const ForecastDaysSelector: React.FC<ForecastDaysSelectorProps> = ({ forecastDays, onChange }) => {
   const forecastPeriods = [3, 7, 14];

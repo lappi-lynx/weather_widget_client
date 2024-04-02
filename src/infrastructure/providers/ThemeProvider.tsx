@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { createTheme, PaletteMode } from "@mui/material";
@@ -10,7 +10,7 @@ enum Themes {
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const searchParams = new URLSearchParams(location.search);
   const getThemeMode = (themeParam: string | null) => themeParam === Themes.Light ? Themes.Light : Themes.Dark;
   const mode: PaletteMode = getThemeMode(searchParams.get('theme'));
   const themeInit = (mode: PaletteMode) => createTheme({

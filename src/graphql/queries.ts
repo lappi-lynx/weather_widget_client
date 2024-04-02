@@ -9,13 +9,13 @@ export const GET_FORECAST_FROM_COORDS_QUERY = gql`
       }
       timestamp
       temperature
-      humidity
       windSpeed
       cloudCover
-      sunshineDuration
-      precipitationProbability
       precipitation
       temperatureUnit
+      # humidity
+      # sunshineDuration
+      # precipitationProbability
     }
   }
 `;
