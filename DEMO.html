@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Widget Page</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #EFECEC;
+      color: #0C2D57;
+      font-size: 1em;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Ensure weatherWidgetContainer takes full width of flexContainer */
+    #weatherWidgetContainer,
+    #weatherWidgetContainer_2 {
+      width: 80%;
+      max-width: auto;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    #flexContainer {
+      display: flex;
+      width: 80%;
+      max-width: 1200px;
+    }
+
+    #newsFeed {
+      text-align: left;
+      flex-grow: 1;
+      padding: 10px;
+    }
+
+    #newsList {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #newsList li {
+      margin-bottom: 20px;
+    }
+
+    span {
+      font-weight: bold;
+      color: #e15759;
+    }
+
+    h3 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    /* Dark theme */
+    body.dark {
+      background-color: #31363F;
+      color: #EEEEEE;
+    }
+
+    body.dark h1,
+    body.dark h2 {
+      color: #76ABAE;
+    }
+
+    body.dark span {
+      color: #e15759;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+
+    body.dark button {
+      background-color: #76ABAE;
+      color: #31363F;
+    }
+  </style>
+</head>
+
+<body class='dark'>
+  <div id="weatherWidgetContainer"></div>
+  <div id="weatherWidgetContainer_2"></div>
+  <h1>How many winters per year Finns can survive?</h1>
+  <div id="flexContainer">
+    <div id="newsFeed">
+      <h2>Random news from Fintlant</h2>
+      <ul id="newsList"></ul>
+    </div>
+  </div>
+
+  <div>
+    <button onclick="toggleTheme()">Switch theme</button>
+  </div>
+
+  <script>
+    function injectWeatherWidget(theme = 'dark') {
+      var iframe = document.createElement('iframe');
+      iframe.src = `http://localhost:3333/daily_forecast?theme=${theme}`;
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.frameBorder = '0';
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.minHeight = '480px';
+      document.getElementById('weatherWidgetContainer').innerHTML = '';
+      document.getElementById('weatherWidgetContainer').appendChild(iframe);
+    }
+
+    function injectWeatherWidgett(theme = 'dark') {
+      var iframe = document.createElement('iframe');
+      iframe.src = `http://localhost:3333/hourly_forecast?theme=${theme}`;
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.frameBorder = '0';
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.minHeight = '480px';
+      document.getElementById('weatherWidgetContainer_2').innerHTML = '';
+      document.getElementById('weatherWidgetContainer_2').appendChild(iframe);
+    }
+
+    function toggleTheme() {
+      var body = document.body;
+      body.classList.toggle('dark');
+      var theme = body.classList.contains('dark') ? 'dark' : 'light';
+      injectWeatherWidget(theme);
+      injectWeatherWidgett(theme);
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      injectWeatherWidget('dark');
+      injectWeatherWidgett('dark');
+    });
+
+    // Add your news items here
+    var newsList = document.getElementById('newsList');
+    var newsItems = [
+      {
+        timestamp: '2022-01-01 10:00',
+        header: 'Finland becomes happiest nation in the world 7 times in a row',
+        description: 'Finland has once again been ranked as the happiest nation in the world for the 7th consecutive year, according to the World Happiness Report.'
+      },
+      {
+        timestamp: '2022-01-02 14:30',
+        header: 'Finnish sauna breaks world record with 1000 participants',
+        description: 'A Finnish sauna event has set a new world record with 1000 participants sweating it out together, creating a steamy spectacle.'
+      },
+      {
+        timestamp: '2022-01-03 09:15',
+        header: 'Finland introduces "Moomin Day" as a national holiday',
+        description: 'In celebration of the beloved Moomin characters, Finland has declared March 9th as "Moomin Day," a national holiday dedicated to the whimsical creatures.'
+      },
+      {
+        timestamp: '2022-01-04 16:45',
+        header: 'Finland wins gold in wife carrying championship',
+        description: 'A Finnish couple has clinched the gold medal in the annual Wife Carrying World Championship, showcasing their strength and teamwork.'
+      },
+      {
+        timestamp: '2022-01-05 11:20',
+        header: 'Finnish town builds igloo hotel for winter tourists',
+        description: 'A small town in Finland has constructed an igloo hotel, offering a unique and cozy experience for winter tourists seeking an unforgettable stay.'
+      }
+    ];
+
+    newsItems.forEach(function (news) {
+      var li = document.createElement('li');
+      var timestamp = document.createElement('span');
+      timestamp.textContent = news.timestamp;
+      var header = document.createElement('h3');
+      header.textContent = news.header;
+      var description = document.createElement('p');
+      description.textContent = news.description;
+      li.appendChild(timestamp);
+      li.appendChild(header);
+      li.appendChild(description);
+      newsList.appendChild(li);
+    });
+  </script>
+</body>
+
+</html>
