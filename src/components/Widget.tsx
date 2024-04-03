@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useCityAutocomplete } from '../hooks/useCityAutocomplete';
-import { GET_FORECAST_FROM_COORDS_QUERY } from '../graphql/queries';
+import { GET_HOURLY_FORECAST_FROM_COORDS_QUERY, GET_DAILY_FORECAST_FROM_COORDS_QUERY } from '../graphql/queries';
 import { SuggestedCity } from '../domain/types/SuggestedCity';
 import { useTheme, Autocomplete, TextField, CircularProgress, Grid } from "@mui/material";
-import { ForecastDaysSelector } from './chart/ForecastDaysSelector';
-import { WeatherChart } from './chart/WeatherChart';
+import { ForecastDaysSelector } from './ForecastDaysSelector';
+import { WeatherChart } from './hourly/WeatherChart';
 import { DEFAULT_WIDGET_PARAMS } from '../infrastructure/constants';
 import { renderErrorAlert } from './../utils/renderErrorAlert';
+import { WidgetProps, ForecastModeEnum } from '../domain/types/WidgetProps';
+import { WeatherCards } from './daily/WeatherCards';
 
-export const Widget: React.FC = () => {
+export const Widget: React.FC<WidgetProps> = ({ mode }) => {
   const [forecastDays, setForecastDays] = useState(DEFAULT_WIDGET_PARAMS.days);
   const [queryParams, setQueryParams] = useState({
     latitude: DEFAULT_WIDGET_PARAMS.latitude,
@@ -18,7 +20,9 @@ export const Widget: React.FC = () => {
   });
   const { palette } = useTheme();
 
-  const { loading: loadingForecast, error: errorForecast, data: forecastData } = useQuery(GET_FORECAST_FROM_COORDS_QUERY, {
+  const forecastQuery = mode === ForecastModeEnum.DAILY ? GET_DAILY_FORECAST_FROM_COORDS_QUERY : GET_HOURLY_FORECAST_FROM_COORDS_QUERY;
+
+  const { loading: loadingForecast, error: errorForecast, data: forecastData } = useQuery(forecastQuery, {
     variables: queryParams
   });
 
@@ -88,8 +92,12 @@ export const Widget: React.FC = () => {
       {errorCities && renderErrorAlert(errorCities, 'cities')}
       {errorForecast && renderErrorAlert(errorForecast, 'forecast')}
 
-      {forecastData && (
-        <WeatherChart forecastData={forecastData.getForecastByCoordinates} palette={palette} />
+      {(forecastData && mode === ForecastModeEnum.DAILY) && (
+        <WeatherCards forecastData={forecastData.getDailyForecastByCoordinates} palette={palette} />
+      )}
+
+      {(forecastData && mode === ForecastModeEnum.HOURLY) && (
+        <WeatherChart forecastData={forecastData.getHourlyForecastByCoordinates} palette={palette} />
       )}
     </main>
   );

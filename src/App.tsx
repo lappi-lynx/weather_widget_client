@@ -4,6 +4,7 @@ import { ApolloProvider } from '@apollo/client';
 import { client } from './graphql/client';
 import { Widget } from './components/Widget';
 import { ThemeProvider } from './infrastructure/providers/ThemeProvider';
+import { ForecastModeEnum } from './domain/types/WidgetProps';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <Router>
         <ThemeProvider>
           <Routes>
-            <Route path="/forecast" element={<Widget />} />
+            <Route path="/daily_forecast" element={<Widget mode={ ForecastModeEnum.DAILY } />} />
+            <Route path="/hourly_forecast" element={<Widget mode={ ForecastModeEnum.HOURLY } />} />
           </Routes>
         </ThemeProvider>
       </Router>

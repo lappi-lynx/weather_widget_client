@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ResponsiveChartContainer, LinePlot, ChartsXAxis, ChartsYAxis, ChartsLegend, ChartsGrid, ChartsReferenceLine, ChartsTooltip, BarPlot } from '@mui/x-charts';
-import { WeatherData } from './../../domain/types/WeatherData';
+import { HourlyWeatherData } from '../../domain/types/WeatherData';
 import { Theme } from '@mui/material';
-import { formatDateForChart } from './../../utils/formatDateForWidget';
-import { ChartData } from './../../domain/types/ChartData';
+import { formatDateForChart } from '../../utils/formatDateForWidget';
+import { ChartData } from '../../domain/types/ChartData';
 
-export const WeatherChart: React.FC<{ forecastData: WeatherData[]; palette: Theme['palette'] }> = ({ forecastData, palette }) => {
+export const WeatherChart: React.FC<{ forecastData: HourlyWeatherData[]; palette: Theme['palette'] }> = ({ forecastData, palette }) => {
   const [chartData, setChartData] = useState<ChartData>({
     xAxisData: [],
     seriesData: [],
@@ -13,7 +13,7 @@ export const WeatherChart: React.FC<{ forecastData: WeatherData[]; palette: Them
 
   useEffect(() => {
     if (forecastData) {
-      const chartData = forecastData.reduce((data: ChartData, forecast: WeatherData) => {
+      const chartData = forecastData.reduce((data: ChartData, forecast: HourlyWeatherData) => {
         data.xAxisData.push(new Date(forecast.timestamp));
         data.seriesData[0].push(forecast.temperature);
         data.seriesData[1].push(forecast.precipitation);

@@ -10,12 +10,14 @@ docker run --rm -p 3333:3333 forecast_client
 ```
 
 ### Embedding
+! Note: use `/daily_forecast` or `/hourly_forecast` URL for daily and hourly data displaying !
 ```
 <script>
     function injectWeatherWidget(theme = 'dark') {
       var iframe = document.createElement('iframe');
       // client app url
-      iframe.src = `http://localhost:3333/forecast?theme=${theme}`;
+      // use /daily_forecast for daily data displaying
+      iframe.src = `http://localhost:3333/hourly_forecast?theme=${theme}`;
       iframe.width = '100%';
       iframe.height = '100%';
       iframe.frameBorder = '0';
@@ -49,12 +51,20 @@ docker run --rm -p 3333:3333 forecast_client
 - [X] The website works in all modern browsers
 - [X] Responsible, adaptive design
 - [X] Add info about wind, clouds, precipitation
-- [ ] Add weather icons
+- [X] Add weather icons
 - [ ] Unit tests
 - [X] City autocomplete requests are cached in browser (localStorage)
-- [ ] Add compact mode to show daly forecast in a round box (separate component & URL)
--
+- [X] Add separate daily mode to show forecast in a round boxes (separate component & URL)
+
+
 ### Theme support
+2 modes available: `daily` and `hourly`.
+#### Hourly mode examples:
 `dark` (by default) and `light` themes supported
 ![Dark theme](./examples/dark_theme.jpeg)
 ![Light theme](./examples/light_theme.jpeg)
+#### Daily mode examples:
+![Dark theme long](./examples/daily_dark_long.jpeg)
+![Light theme long](./examples/daily_light_long.jpeg)
+![Dark theme short](./examples/daily_dark_short.jpeg)
+![Light theme short](./examples/daily_light_short.jpeg)
