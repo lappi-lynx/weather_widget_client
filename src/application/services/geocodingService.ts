@@ -16,7 +16,7 @@ export const fetchCities = async (city: string, signal: AbortSignal): Promise<Su
 
     // data.results might be undefined for a short time because of debouncing
     const uniqCitiesData = data.results?.reduce((unique: SuggestedCity[], city: SuggestedCity) => {
-      if (unique.findIndex(u => u.name === city.name && u.country_id === city.country_id) === -1) {
+      if (!unique.some(u => u.name === city.name && u.country_id === city.country_id)) {
         unique.push(city);
       }
       return unique;

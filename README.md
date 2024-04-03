@@ -52,7 +52,7 @@ docker run --rm -p 3333:3333 forecast_client
 - [X] Responsible, adaptive design
 - [X] Add info about wind, clouds, precipitation
 - [X] Add weather icons
-- [ ] Unit tests
+- [X] Unit tests
 - [X] City autocomplete requests are cached in browser (localStorage)
 - [X] Add separate daily mode to show forecast in a round boxes (separate component & URL)
 
