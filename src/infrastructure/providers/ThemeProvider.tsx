@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { createTheme, PaletteMode } from "@mui/material";
@@ -13,10 +13,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const searchParams = new URLSearchParams(location.search);
   const getThemeMode = (themeParam: string | null) => themeParam === Themes.Light ? Themes.Light : Themes.Dark;
   const mode: PaletteMode = getThemeMode(searchParams.get('theme'));
-  const themeInit = (mode: PaletteMode) => createTheme({
+
+  const theme = useMemo(() => createTheme({
     palette: {
       mode: mode,
-      ...(mode === 'light' ? {
+      ...(mode === Themes.Light ? {
         background: {
           default: '#EEEEEE',
           paper: '#EEEEEE',
@@ -62,10 +63,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         },
       })
     },
-  });
+  }), [mode]);
 
   return (
-    <MUIThemeProvider theme={themeInit(mode)}>
+    <MUIThemeProvider theme={theme}>
         {children}
     </MUIThemeProvider>
   );
